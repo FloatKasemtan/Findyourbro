@@ -1,9 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
   useHistory
 } from "react-router-dom";
 import Avatar from '@material-ui/core/Avatar';
@@ -27,7 +24,7 @@ const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link href="https://material-ui.com/">
         Your Website
       </Link>{' '}
       {new Date().getFullYear()}
@@ -45,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -59,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   let history = useHistory();
-  const { profile, loggedIn, setloggedIn, setProfile, reload } = useContext(userContext)
+  const { setloggedIn } = useContext(userContext)
   const login = () => {
     setloggedIn(true);
     history.push("/about");

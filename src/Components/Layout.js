@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Navbar from "../Components/Navbar"
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     container: {
-        position: 'absolute'
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center'
     }
 });
 
 const Layout = ({ children }) => {
     const classes = useStyles();
     return (
-        <>
-            <div>
+        <div>
+            <div className={classes.container}>
                 <Navbar></Navbar>
             </div>
             <main>{children}</main>
-        </>
+        </div>
     )
 }
 

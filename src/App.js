@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Redirect } from "react-router-dom"
+import React from "react";
 import Layout from "../src/Components/Layout"
 import LoginRe from "./Components/LoginRe";
+import Login from "./Components/Login";
 import About from "../src/Components/About";
 import Users from "../src/Components/Users";
 import { UserContextProvider } from "../src/Contexts/userContext"
@@ -28,7 +28,6 @@ function App() {
             </Layout>
           </Route>
           <Route path="/">
-            {/* {loggedIn ? <Redirect to="/about" /> : <Login />} */}
             <LoginRe />
           </Route>
         </Switch>
