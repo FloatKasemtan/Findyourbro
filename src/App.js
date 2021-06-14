@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../src/Components/Layout"
 import LoginRe from "./Components/LoginRe";
 import Login from "./Components/Login";
-import About from "../src/Components/About";
+import About from "./Components/Guess";
 import Users from "../src/Components/Users";
 import { UserContextProvider } from "../src/Contexts/userContext"
 import {
@@ -28,7 +28,8 @@ function App() {
             </Layout>
           </Route>
           <Route path="/">
-            <LoginRe />
+            {/* <LoginRe /> */}
+            <Login />
           </Route>
         </Switch>
       </Router>

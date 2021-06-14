@@ -37,11 +37,11 @@ const About = () => {
     const classes = useStyles();
     const submit = () => {
         if (true) {
-            swal("Good job!", "You clicked the button!", "success");
+            swal("You found your senior!", "Good job!", "success");
         } else if (true) {
-            swal("Good job!", "You clicked the button!", "error");
+            swal("This code is not belong to anyone!", "You could enter wrong code", "error");
         } else {
-            swal("Good job!", "You clicked the button!", "warning");
+            swal("Wrong person!!!", "Try another person!, You have 2 chance left", "warning");
         }
     };
     return (
