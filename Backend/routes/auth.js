@@ -2,48 +2,49 @@ const express = require('express');
 const router = express.Router();
 var jwt = require('jsonwebtoken');
 const juniorSchema = require('../models/junior');
-
-// 1001 = success
-// 1002 = user fault
-// 1003 = server fault
+const seniorSchema = require('../models/senior');
 
 router.post('/sign-up', async (req, res) => {
-    const junior = new juniorSchema({
-        student_id: req.body.student_id,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        _user: req.body._user,
-        _pass: req.body._pass,
-        quota: req.body.quota,
-        pairSeniorCode: req.body.pairSeniorCode,
-    });
     try {
-        await junior.save();
-        res.send({ respond: '1001' });
+        if (await juniorSchema.findOne({ "_user": req.body._user })) {
+            res.send({ respond: '1003' }) //Username has been used
+        }
+        const senior = await seniorSchema.findOne({ 'pairingCode': req.body.pairingCode });
+        if (senior) {
+            const junior = new juniorSchema({
+                student_id: req.body.student_id,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                _user: req.body._user,
+                _pass: req.body._pass,
+                quota: 6,
+                pairSeniorCode: senior.pairSeniorCode,
+                foundPeer: false
+            });
+            try {
+                await junior.save();
+                res.send({ respond: '1001' });
+            } catch (err) {
+                res.send({ respond: '1002', error: err });
+            }
+        }
+        res.send({ respond: '1004' })// No senpai in database
     } catch (err) {
-        res.send({ respond: '1003' });
-        console.log(err);
+        res.send({ respond: '1002', error: err });
     }
 });
 
 router.post('/sign-in', async (req, res) => {
     try {
         const user = await juniorSchema.findOne({ '_user': req.body._user, '_pass': req.body._pass });
-        var token = jwt.sign({ student_id: user.student_id, firstName: user.firstName, lastName: user.lastName, quota: user.quota }, 'shhhhh');
+        var token = jwt.sign({ student_id: user.student_id, firstName: user.firstName, lastName: user.lastName, quota: user.quota, foundPeer: user.foundPeer }, 'shhhhh');
         if (user) {
             res.send({ respond: '1001', token: token });
         }
-        res.send({respond: '1002'});
-    }catch(err){
-        res.send({respond: '1003'});
+        res.send({ respond: '1003' });
+    } catch (err) {
+        res.send({ respond: '1002', error: err });
     }
 });
-
-router.get('/', (req, res) => {
-    var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
-    var decoded = jwt.verify(token, 'shhhhh');
-    console.log(decoded.foo);
-    res.send(decoded.foo);
-})
 
 module.exports = router;

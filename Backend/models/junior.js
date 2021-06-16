@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 let juniorSchema = mongoose.Schema({
-    student_id:{
+    student_id: {
         type: String,
         require: true
     },
-    firstName:{
+    firstName: {
         type: String,
         require: true
     },
-    lastName:{
+    lastName: {
         type: String,
         require: true
     },
@@ -21,12 +21,16 @@ let juniorSchema = mongoose.Schema({
         type: String,
         require: true,
     },
-    quota:{
+    quota: {
         type: Number,
         require: true
     },
-    pairSeniorCode:{
+    pairSeniorCode: {
         type: String,
+        require: true
+    },
+    foundPeer: {
+        type: Boolean,
         require: true
     }
 })

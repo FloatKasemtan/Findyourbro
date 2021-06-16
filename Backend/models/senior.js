@@ -17,6 +17,10 @@ let seniorSchema = mongoose.Schema({
         type: String,
         require: true
     },
+    pairingCode:{
+        type: String,
+        require: true
+    }
 })
 
 module.exports = mongoose.model('senior', seniorSchema);
