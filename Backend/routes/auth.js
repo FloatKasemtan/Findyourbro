@@ -39,8 +39,8 @@ router.post('/sign-in', async (req, res) => {
         const user = await juniorSchema.findOne({ '_user': req.body._user, '_pass': req.body._pass });
         if (user) {
             var token = jwt.sign({ student_id: user.student_id, firstName: user.firstName, lastName: user.lastName, quota: user.quota, foundPeer: user.foundPeer }, 'shhhhh');
-            res.send({ respond: '1001', token: token });
             console.log('logined');
+            return res.send({ respond: '1001', token: token });
         }
         res.send({ respond: '1003' });
         console.log('Wrong Pass');

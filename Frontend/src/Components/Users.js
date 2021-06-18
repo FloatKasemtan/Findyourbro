@@ -32,7 +32,7 @@ const Users = () => {
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
     useEffect(() => {
-        reload()
+        reload();
         setTimeout(() => {
             setLoading(true);
         }, 2000);

@@ -40,9 +40,6 @@ const About = () => {
     const { profile, reload } = useContext(userContext);
     const [code, setcode] = useState('');
     const classes = useStyles();
-    useEffect(() => {
-        reload();
-    }, [])
     const submit = async () => {
         console.log(code.length);
         if (code.length === 6) {

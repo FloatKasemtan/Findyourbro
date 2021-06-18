@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
     BrowserRouter as Router,
     useHistory
@@ -13,6 +13,7 @@ import Swal from 'sweetalert2'
 import Button from '@material-ui/core/Button';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Cookies from 'js-cookie';
+import { userContext } from '../Contexts/userContext';
 
 const useStyles = makeStyles((theme) => ({
     navbar: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = () => {
     const classes = useStyles();
+    const { reload } = useContext(userContext);
     const [value, setValue] = React.useState(0);
     const btnText = { color: 'red' }
     let history = useHistory();
@@ -68,6 +70,7 @@ const Navbar = () => {
                         }
                     }).then(async () => {
                         await Cookies.remove('token');
+                        reload();
                         history.push("/");
                         swal({
                             title: "Successfully logout!",

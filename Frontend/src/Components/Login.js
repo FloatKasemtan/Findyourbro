@@ -18,6 +18,7 @@ import Container from '@material-ui/core/Container';
 import swal from 'sweetalert';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { userContext } from '../Contexts/userContext';
 
 const Copyright = () => {
   return (
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
   let history = useHistory();
+  const { reload } = useContext(userContext);
   const [username, setusername] = useState('');
   const [password, setpassword] = useState('');
   const login = async () => {
@@ -55,6 +57,7 @@ export default function SignIn() {
 
     if (res.data.respond == '1001') {//Success
       await Cookies.set('token', res.data.token);
+      reload();
       history.push("/about");
     } else if (res.data.respond == '1003') {//Wrong User or Pass
       swal('Wrong username or password', '', 'warning')
