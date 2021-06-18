@@ -14,8 +14,8 @@ import {
 function App() {
 
   return (
-    <UserContextProvider>
-      <Router>
+    <Router>
+      <UserContextProvider>
         <Switch>
           <Route path="/about">
             <Layout>
@@ -32,8 +32,9 @@ function App() {
             <Login />
           </Route>
         </Switch>
-      </Router>
-    </UserContextProvider>
+
+      </UserContextProvider>
+    </Router >
   );
 }
 

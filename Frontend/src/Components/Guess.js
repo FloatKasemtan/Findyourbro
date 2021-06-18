@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Zoom from '@material-ui/core/Zoom';
 import TextField from '@material-ui/core/TextField';
 import swal from 'sweetalert';
+import axios from 'axios';
+import { userContext } from '../Contexts/userContext';
+
 
 const useStyles = makeStyles({
     btn: {
@@ -34,14 +37,34 @@ const useStyles = makeStyles({
 });
 
 const About = () => {
+    const { profile, reload } = useContext(userContext);
+    const [code, setcode] = useState('');
     const classes = useStyles();
-    const submit = () => {
-        if (true) {
-            swal("You found your senior!", "Good job!", "success");
-        } else if (true) {
-            swal("This code is not belong to anyone!", "You could enter wrong code", "error");
+    useEffect(() => {
+        reload();
+    }, [])
+    const submit = async () => {
+        console.log(code.length);
+        if (code.length === 6) {
+            const res = await axios.post('http://localhost:8080/junior/find-mentor', {
+                student_id: profile.student_id,
+                pairSeniorCode: code
+            });
+            if (res.data.respond == '1001') {
+                swal("Congrat!", "You found your senior!", "success");
+            } else if (res.data.respond == '1004') {
+                swal("This code is not belong to anyone!", "You could enter wrong code", "error");
+            } else if (res.data.respond == '1003') {
+                swal("Wrong person!!!", `Try another person!, You have ${res.data.quota} chance left`, "warning");
+            } else if (res.data.respond == '1005') {
+                swal("You have no more quota left", `Better luck next time!`, "error");
+            } else if (res.data.respond == '1002') {
+                swal("Server error, please contact support!", '', "error");
+            } else {
+                swal("Unknow error!", '', "error");
+            }
         } else {
-            swal("Wrong person!!!", "Try another person!, You have 2 chance left", "warning");
+            swal("Please enter 6 digits code!", '', "warning");
         }
     };
     return (
@@ -50,7 +73,7 @@ const About = () => {
                 <h1 style={{ color: '#FE6B8B' }} className={classes.text} >Guess your senior</h1>
 
             </Zoom>
-            <TextField color='secondary' className={classes.textField} id="standard-basic" />
+            <TextField color='secondary' className={classes.textField} id="standard-basic" onChange={(e) => setcode(e.target.value)} inputProps={{ min: 0, style: { textAlign: 'center', fontSize: '2em' } }} />
             <Button className={classes.btn} onClick={submit}>submit</Button>
         </div >
     );
