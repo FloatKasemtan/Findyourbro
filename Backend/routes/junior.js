@@ -10,14 +10,14 @@ router.post('/find-mentor', async (req, res) => {
         if (user.quota > 0) {
             if (senior) {
                 try {
-                    if (senior.pairSeniorCode == req.body.userCode) {
+                    if (senior.pairSeniorCode == user.pairSeniorCode) {
                         user.foundPeer = true;
                         await user.save();
                         res.send({ respond: '1001' });
                     }
                     user.quota--;
                     await user.save();
-                    res.send({ respond: '1003' }); //Wrong Senpai
+                    res.send({ respond: '1003', quota: user.quota }); //Wrong Senpai
                 } catch (err) {
                     res.send({ respond: '1002' });
                     console.log(err);
