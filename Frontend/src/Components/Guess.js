@@ -37,9 +37,23 @@ const useStyles = makeStyles({
 });
 
 const About = () => {
-    const { profile, reload } = useContext(userContext);
+    const { profile } = useContext(userContext);
+    const [foundPeer, setFoundPeer] = useState();
+    const [senior, setSenior] = useState();
     const [code, setcode] = useState('');
     const classes = useStyles();
+    const getFoundPeer = async () => {
+        const res = await axios.get('http://localhost:8080/junior/getFoundPeer', { params: { student_id: profile.student_id } });
+        setFoundPeer(res.data.foundPeer);
+    }
+    const getSeniorData = async () => {
+        const res = await axios.get('http://localhost:8080/senior', { params: { student_id: profile.student_id } });
+        setSenior(res.data.senior.firstName);
+    }
+    useEffect(() => {
+        getFoundPeer();
+        getSeniorData()
+    }, [])
     const submit = async () => {
         console.log(code.length);
         if (code.length === 6) {
@@ -49,6 +63,7 @@ const About = () => {
             });
             if (res.data.respond == '1001') {
                 swal("Congrat!", "You found your senior!", "success");
+                getFoundPeer();
             } else if (res.data.respond == '1004') {
                 swal("This code is not belong to anyone!", "You could enter wrong code", "error");
             } else if (res.data.respond == '1003') {
@@ -64,16 +79,24 @@ const About = () => {
             swal("Please enter 6 digits code!", '', "warning");
         }
     };
-    return (
+    return foundPeer ? (
         <div className={classes.container}>
-            <Zoom in={true} timeout={900}>
-                <h1 style={{ color: '#FE6B8B' }} className={classes.text} >Guess your senior</h1>
 
-            </Zoom>
-            <TextField color='secondary' className={classes.textField} id="standard-basic" onChange={(e) => setcode(e.target.value)} inputProps={{ min: 0, style: { textAlign: 'center', fontSize: '2em' } }} />
-            <Button className={classes.btn} onClick={submit}>submit</Button>
+            <h1 style={{ color: '#FE6B8B' }} className={classes.text} >Congrats you found your PeerSenior!</h1>
+            <h2 style={{ color: '#FE6B8B' }} className={classes.text}>It's {senior}</h2>
+
         </div >
-    );
+    ) :
+        (
+            <div className={classes.container}>
+                <Zoom in={true} timeout={900}>
+                    <h1 style={{ color: '#FE6B8B' }} className={classes.text} >Guess your senior</h1>
+
+                </Zoom>
+                <TextField color='secondary' className={classes.textField} id="standard-basic" onChange={(e) => setcode(e.target.value)} inputProps={{ min: 0, style: { textAlign: 'center', fontSize: '2em' } }} />
+                <Button className={classes.btn} onClick={submit}>submit</Button>
+            </div >
+        )
 }
 
 export default About;

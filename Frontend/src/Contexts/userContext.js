@@ -13,7 +13,6 @@ const getProfile = () => {
                 firstName: decoded.firstName,
                 lastName: decoded.lastName,
                 student_id: decoded.student_id,
-                quota: decoded.quota
             };
         }
         catch (err) {

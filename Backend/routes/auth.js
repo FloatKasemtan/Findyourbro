@@ -38,8 +38,9 @@ router.post('/sign-in', async (req, res) => {
     try {
         const user = await juniorSchema.findOne({ '_user': req.body._user, '_pass': req.body._pass });
         if (user) {
-            var token = jwt.sign({ student_id: user.student_id, firstName: user.firstName, lastName: user.lastName, quota: user.quota, foundPeer: user.foundPeer }, 'shhhhh');
+            var token = jwt.sign({ student_id: user.student_id, firstName: user.firstName, lastName: user.lastName }, 'shhhhh');
             console.log('logined');
+            res.header("Authorizaation", user.student_id);
             return res.send({ respond: '1001', token: token });
         }
         res.send({ respond: '1003' });

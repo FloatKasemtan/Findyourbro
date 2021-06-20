@@ -5,6 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Fade from '@material-ui/core/Fade';
 import { userContext } from '../Contexts/userContext';
+import axios from 'axios';
 
 const useStyles = makeStyles({
     root: {
@@ -31,12 +32,18 @@ const Users = () => {
     const { profile, reload } = useContext(userContext);
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
+    const [quota, setQuota] = useState();
+    const getQuota = async () => {
+        const res = await axios.get('http://localhost:8080/junior/getQuota', { params: { student_id: profile.student_id } });
+        setQuota(res.data.quota);
+    }
     useEffect(() => {
+        getQuota();
         reload();
         setTimeout(() => {
             setLoading(true);
         }, 2000);
-    }, [])
+    }, []);
 
     return (
         <div className={classes.container}>
@@ -46,7 +53,7 @@ const Users = () => {
                         <h2 style={{ marginLeft: 30 }}>Users Info</h2>
                         {loading ? <div className={classes.content}>Name : {profile.firstName} {profile.lastName}</div> : <div className={classes.content}><Skeleton /></div>}
                         {loading ? <div className={classes.content}>Student ID : {profile.student_id}</div> : <div className={classes.content}><Skeleton /></div>}
-                        {loading ? <div className={classes.content}>Quota : {profile.quota}</div> : <div className={classes.content}><Skeleton /></div>}
+                        {loading ? <div className={classes.content}>Quota : {quota}</div> : <div className={classes.content}><Skeleton /></div>}
                     </CardContent>
                 </Card >
             </Fade>
