@@ -3,6 +3,9 @@ import Navbar from "../Components/Navbar"
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { userContext } from '../Contexts/userContext';
+import bgTop from '../img/WEB1(HOME).svg';
+import bgBottom from '../img/WEB3.svg';
+
 const useStyles = makeStyles({
     container: {
         position: 'relative',
@@ -19,9 +22,11 @@ const Layout = ({ children }) => {
         if (profile.student_id === '') {
             history.push("/");
         }
-    }, [])
+    }, []);
+
     return (
         <div>
+            <img style={{position:'fixed', top:-50}} src={bgTop} />
             <div className={classes.container}>
                 <Navbar></Navbar>
             </div>
@@ -30,7 +35,7 @@ const Layout = ({ children }) => {
                 <div></div>
 
             </main>
-
+            <img style={{position:'fixed', bottom:-50 }} src={bgBottom} />
         </div>
     )
 }

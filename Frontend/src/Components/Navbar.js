@@ -1,12 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 import {
     BrowserRouter as Router,
-    useHistory
+    useHistory,
+    Link
 } from "react-router-dom";
 import SearchIcon from '@material-ui/icons/Search';
 import { makeStyles } from '@material-ui/core/styles';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import swal from 'sweetalert';
 import Swal from 'sweetalert2'
@@ -27,6 +26,11 @@ const useStyles = makeStyles((theme) => ({
         width: 20,
         height: 20,
     },
+    btn: {
+        marginTop: 20,
+        marginLeft: 40,
+        marginRight: 40,
+    },
     logoutBtn: {
         display: 'flex',
         flexDirection: 'row',
@@ -36,8 +40,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = () => {
     const classes = useStyles();
     const { reload } = useContext(userContext);
-    const [value, setValue] = React.useState(0);
-    const btnText = { color: 'red' }
+    const [value, setValue] = React.useState('Guess');
     let history = useHistory();
 
     const logout = () => {
@@ -87,25 +90,29 @@ const Navbar = () => {
         } else if (value === 'Your info') {
             history.push("/users");
         }
-        console.log(value);
     }, [value])
     return (
         <div>
             <nav className={classes.navbar}>
-                <BottomNavigation
-                    value={value}
-                    onChange={(event, newValue) => {
-                        setValue(newValue);
-                    }}
-                >
-                    <BottomNavigationAction style={btnText} label="Guess" value="Guess" icon={<SearchIcon color='secondary' className={classes.icon} />} />
-                    <BottomNavigationAction style={btnText} label="Your info" value="Your info" icon={<AccountCircleIcon color='secondary' />} />
-                </BottomNavigation>
-                <Button style={{ position: 'absolute', right: 50, top: 15 }} color="secondary" onClick={logout}><div className={classes.logoutBtn}><ExitToAppIcon color='secondary' className={classes.icon} /><p style={{ margin: '0 0 0 0' }}>Logout</p></div> </Button>
+                <Link style={{ textDecoration: 'none' }} to='/about'>
+                    <Button className={classes.btn} color="secondary" startIcon={<SearchIcon />}>
+                        Guess
+                    </Button>
+                </Link>
+                <Link style={{ textDecoration: 'none' }} to='/users'>
+                    <Button className={classes.btn} color="secondary" startIcon={<AccountCircleIcon />} >
+                        Your info
+                    </Button>
+                </Link>
+                <Button style={{ position: 'absolute', right: 50, top: 15 }} color="secondary" onClick={logout}>
+                    <div className={classes.logoutBtn}>
+                        <ExitToAppIcon color='secondary' className={classes.icon} />
+                        <p style={{ margin: '0 0 0 0' }}>Logout</p></div>
+                </Button>
             </nav>
 
 
-        </div>
+        </div >
     )
 }
 
