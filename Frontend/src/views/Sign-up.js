@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import swal from "sweetalert";
-import Cookies from "js-cookie";
+import Cookies, { set } from "js-cookie";
 import axios from "axios";
 import { userContext } from "../Contexts/userContext";
 import bgTop from "../img/TOP.svg";
@@ -51,29 +51,49 @@ export default function SignIn() {
   const classes = useStyles();
   let history = useHistory();
   const { reload } = useContext(userContext);
+  const [firstName, setfirstName] = useState("");
+  const [lastName, setlastName] = useState("");
   const [username, setusername] = useState("");
   const [password, setpassword] = useState("");
-  const login = async () => {
-    if (username !== "" && password !== "") {
-      const res = await axios.post("http://localhost:8080/auth/sign-in", {
-        _user: username,
-        _pass: password,
-      });
-
-      if (res.data.respond == "1001") {
-        //Success
-        await Cookies.set("token", res.data.token);
-        reload();
-        history.push("/about");
-      } else if (res.data.respond == "1003") {
-        //Wrong User or Pass
-        swal("Wrong username or password", "", "warning");
-      } else if (res.data.respond == "1002") {
-        //Server Error
-        swal("Server error please contract support", "", "error");
+  const [_password, set_password] = useState("");
+  const [_passwordR, set_passwordR] = useState(false);
+  const [studentId, setStudentId] = useState("");
+  const [seniorCode, setSeniorCode] = useState("");
+  const register = async () => {
+    if (
+      firstName !== "" &&
+      lastName !== "" &&
+      username !== "" &&
+      password !== "" &&
+      _password !== "" &&
+      studentId !== "" &&
+      seniorCode !== ""
+    ) {
+      if (password == _password) {
+        const res = await axios.post("http://localhost:8080/auth/sign-up", {
+          student_id: studentId,
+          firstName: firstName,
+          lastName: lastName,
+          _user: username,
+          _pass: password,
+          pairingCode: seniorCode,
+        });
+        if (res.data.respond == "1001") {
+          swal("Register done!", "", "success");
+          setTimeout(() => {
+            history.push("/");
+          }, 2000);
+        } else if (res.data.respond == "1004") {
+          swal("No one own this code", "please check your typing!", "error");
+        } else if (res.data.respond == "1002") {
+          swal("Server error please contract support", "", "error");
+        }
+      } else {
+        document.getElementById("_password").value = "";
+        set_passwordR(true);
       }
     } else {
-      swal("Please enter your infomation", "", "warning");
+      swal("Please enter all required data!", "", "warning");
     }
   };
   return (
@@ -82,7 +102,7 @@ export default function SignIn() {
         style={{
           position: "fixed",
           width: "60%",
-          height: 'auto',
+          height: "auto",
           top: 0,
           right: 0,
           pointerEvents: "none",
@@ -103,26 +123,27 @@ export default function SignIn() {
               <Grid container>
                 <Grid item xs="8">
                   <TextField
+                    autoFocus
                     variant="outlined"
                     required
-                    name="password"
-                    onChange={(e) => setpassword(e.target.value)}
+                    name="studentId"
+                    onChange={(e) => setStudentId(e.target.value)}
                     label="Student ID"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
+                    type="number"
+                    id="studentId"
                   />
                 </Grid>
                 <Grid item xs="4">
                   <TextField
                     variant="outlined"
                     required
-                    name="password"
-                    onChange={(e) => setpassword(e.target.value)}
+                    name="SeniorCode"
+                    onInput={(e) => {
+                      e.target.value = e.target.value.slice(0, 6);
+                    }}
+                    onChange={(e) => setSeniorCode(e.target.value)}
                     label="Senior Code"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
+                    type="text"
                   />
                 </Grid>
               </Grid>
@@ -131,9 +152,16 @@ export default function SignIn() {
                 margin="normal"
                 required
                 fullWidth
-                label="Firstname"
-                autoFocus
+                label="Username"
                 onChange={(e) => setusername(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Firstname"
+                onChange={(e) => setfirstName(e.target.value)}
               />
               <TextField
                 variant="outlined"
@@ -141,8 +169,7 @@ export default function SignIn() {
                 required
                 fullWidth
                 label="Lastname"
-                autoFocus
-                onChange={(e) => setusername(e.target.value)}
+                onChange={(e) => setlastName(e.target.value)}
               />
               <TextField
                 variant="outlined"
@@ -157,15 +184,16 @@ export default function SignIn() {
                 autoComplete="current-password"
               />
               <TextField
+                error={_passwordR}
                 variant="outlined"
                 margin="normal"
                 required
                 fullWidth
                 name="password"
-                onChange={(e) => setpassword(e.target.value)}
-                label="Password"
+                onChange={(e) => set_password(e.target.value)}
+                label="Re-enter your password"
                 type="password"
-                id="password"
+                id="_password"
                 autoComplete="current-password"
               />
 
@@ -173,7 +201,7 @@ export default function SignIn() {
                 fullWidth
                 variant="contained"
                 color="primary"
-                onClick={login}
+                onClick={register}
                 className={classes.btn}
               >
                 Register
@@ -197,7 +225,7 @@ export default function SignIn() {
         style={{
           position: "fixed",
           width: "60%",
-          height: 'auto',
+          height: "auto",
           bottom: 0,
           left: 0,
           pointerEvents: "none",

@@ -52,28 +52,36 @@ export default function SignIn() {
   let history = useHistory();
   const { reload } = useContext(userContext);
   const [username, setusername] = useState("");
+  const [usernameR, setusernameR] = useState(false);
   const [password, setpassword] = useState("");
+  const [passwordR, setpasswordR] = useState(false);
   const login = async () => {
-    if (username !== "" && password !== "") {
-      const res = await axios.post("http://localhost:8080/auth/sign-in", {
-        _user: username,
-        _pass: password,
-      });
+    if (username !== "") {
+      setusernameR(false);
+      if (password !== "") {
+        setpasswordR(false);
+        const res = await axios.post("http://localhost:8080/auth/sign-in", {
+          _user: username,
+          _pass: password,
+        });
 
-      if (res.data.respond == "1001") {
-        //Success
-        await Cookies.set("token", res.data.token);
-        reload();
-        history.push("/about");
-      } else if (res.data.respond == "1003") {
-        //Wrong User or Pass
-        swal("Wrong username or password", "", "warning");
-      } else if (res.data.respond == "1002") {
-        //Server Error
-        swal("Server error please contract support", "", "error");
+        if (res.data.respond == "1001") {
+          //Success
+          await Cookies.set("token", res.data.token);
+          reload();
+          history.push("/about");
+        } else if (res.data.respond == "1003") {
+          //Wrong User or Pass
+          swal("Wrong username or password", "", "warning");
+        } else if (res.data.respond == "1002") {
+          //Server Error
+          swal("Server error please contract support", "", "error");
+        }
+      } else {
+        setpasswordR(true);
       }
     } else {
-      swal("Please enter your infomation", "", "warning");
+      setusernameR(true);
     }
   };
   return (
@@ -82,7 +90,7 @@ export default function SignIn() {
         style={{
           position: "fixed",
           width: "60%",
-          height: 'auto',
+          height: "auto",
           top: 0,
           right: 0,
           pointerEvents: "none",
@@ -101,6 +109,7 @@ export default function SignIn() {
           <Grow in timeout={500}>
             <form className={classes.form} noValidate>
               <TextField
+                error={usernameR}
                 variant="outlined"
                 margin="normal"
                 required
@@ -110,6 +119,7 @@ export default function SignIn() {
                 onChange={(e) => setusername(e.target.value)}
               />
               <TextField
+                error={passwordR}
                 variant="outlined"
                 margin="normal"
                 required
@@ -151,7 +161,7 @@ export default function SignIn() {
         style={{
           position: "fixed",
           width: "60%",
-          height: 'auto',
+          height: "auto",
           bottom: 0,
           left: 0,
           pointerEvents: "none",
