@@ -19,7 +19,7 @@ app.use(express.json());
 app.use('/auth', auth);
 app.use('/senior', senior);
 app.use('/junior', junior);
-mongoose.connect('mongodb://root:mixko50datafordb@mixkoserver.mixko.ml:27017/FloatDB', { useNewUrlParser: true, authSource: 'admin', useUnifiedTopology: true });
+mongoose.connect('your mongoDB', { useNewUrlParser: true, authSource: 'admin', useUnifiedTopology: true });
 const db = mongoose.connection;
 
 db.once('open', function () {

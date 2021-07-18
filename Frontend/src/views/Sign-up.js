@@ -106,6 +106,7 @@ export default function SignIn() {
           top: 0,
           right: 0,
           pointerEvents: "none",
+          zIndex: -999,
         }}
         src={bgTop}
       />
